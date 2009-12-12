@@ -11,7 +11,7 @@ Here is a list of pending features and some detected-reported errors.
 
 - Check and correct paragraphs support.
 - Support multiline code text.
-- Support hyperlinks.
+- Check and correct hyperlinks support.
 - Support tables.
 - Support images.
 - Check and support correctly 'trademark', 'registered' and

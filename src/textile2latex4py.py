@@ -39,17 +39,19 @@ class InitParser:
     
 class Textile2LaTeXParser(InitParser):
 
+
+    # Tokens list
     tokens = (
-        'ALPHANUMTEXT','ALPHATEXT',
         'UNDERSCORE','ASTERISK','CARET','TILDE','NUMBERSIGN',
-        'DBLQUOTE',
+        'DBLQUOTE','COLON',
+        'ALPHANUMTEXT','ALPHATEXT','URLTEXT',
         'H1','H2','H3','H4','H5',
         'BQ','FN','LCODE','RCODE',
         'TRADEMARK','REGISTERED','COPYRIGHT',
         'newline',
         )
 
-    # Tokens
+    # Tokens definitions
 
     t_ignore = " \t"
        
@@ -104,6 +106,10 @@ class Textile2LaTeXParser(InitParser):
     def t_DBLQUOTE(self, t):
         r'\"'
         return t
+
+    def t_COLON(self, t):
+        r':'
+        return t
  
     def t_UNDERSCORE(self, t):
         r'_'
@@ -138,7 +144,12 @@ class Textile2LaTeXParser(InitParser):
         return t
         
     def t_ALPHATEXT(self, t):
-        r'[a-zA-Z0-9 ]+'
+        r'[a-zA-Z ]+'
+        return t
+
+    def t_URLTEXT(self, t):
+        r'[a-zA-Z0-9/6\.]+'
+        #r'[a-zA-Z0-9&=:/\?\.-]+'        
         return t
 
     # Parsing rules
@@ -148,20 +159,20 @@ class Textile2LaTeXParser(InitParser):
         textile_content : textile_headers
                         | textile_phrase_modified
                         | dbl_quoted_text
-                        | trademark_text
-                        | registered_text
-                        | copyright_text
                         | blockquote
                         | footnote
                         | superscript_text
                         | subscript_text
+                        | hyperlink_text
                         | list_text
                         | code_text
+                        | trademark_text
+                        | registered_text
+                        | copyright_text
                         | empty
         '''
         p[0] = p[1]
         print p[0]
-
 
     def p_textile_headers(self,p):
         '''
@@ -220,6 +231,13 @@ class Textile2LaTeXParser(InitParser):
         footnote : FN text 
         '''
         p[0] = '\\footnote{' + p[2] + '}'
+
+    def p_hyperlink_text(self,p):
+        '''
+        hyperlink_text : DBLQUOTE text DBLQUOTE COLON URLTEXT
+                       | DBLQUOTE text DBLQUOTE COLON text
+        '''
+        p[0] = '\\htmladdnormallink{' + p[2] + "}{" + p[5] + "}"
 
     def p_textile_phrase_modified(self,p):
         '''
@@ -288,8 +306,8 @@ class Textile2LaTeXParser(InitParser):
     
     def p_text(self,p):
         '''
-        text : ALPHANUMTEXT
-             | ALPHATEXT
+        text : ALPHATEXT
+             | ALPHANUMTEXT
         '''
         p[0] = p[1]
 
@@ -309,8 +327,11 @@ class Textile2LaTeXParser(InitParser):
             print("Syntax error at EOF")
 
 if __name__ == '__main__':
+
+    # Command line argument parser
     parser = OptionParser(version="%prog 0.1")
 
+    # Adding 'file' command line support
     parser.add_option("-f", "--file",
                       action="store", 
                       type="string", 
@@ -319,6 +340,7 @@ if __name__ == '__main__':
 
     (options, args) = parser.parse_args()
 
+    # Command line arguments execution
     if options.filename:
         textile_parser = Textile2LaTeXParser()
 
