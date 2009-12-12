@@ -1,0 +1,28 @@
+h1. An HTML first-level heading
+h2. An HTML second-level heading
+h3. An HTML third-level heading
+h4. An HTML fourth-level heading
+h5. An HTML fifth-level heading
+
+_emphasized_
+
+*strongly emphasized*
+
+* An item in a bulleted (unordered) list
+* Another item in a bulleted list
+** Second Level
+** Second Level Items
+*** Third level
+
+# An item in an enumerated (ordered) list xxxxxxx
+# Another item in an enumerated list yyyyyy
+## Another level in an enumerated list vvvvvvvv
+
+* This is a bullet
+*# this is a numbered list
+*# this is another numbered list
+* This is another bullet
+
+"link text":link_address
+
+This is my (T) and my (C) and is (R)

@@ -1,0 +1,21 @@
+h1. Gentoo Linux
+h2. Intro to Gentoo Linux
+h3. Gentoo like Trademark
+*This is a strong text*
+_This is an underlined text_
+*_This is a strong and underlined text_*
+_*This is a underlined and strong text*_
+bq. This is a blockquote
+fn1. This is the footnote 1
+fn2. This is the footnote 2
+fn9999. This is the footnote 9999
+^This is a superscript text^
+~This is a superscript text~
+"This is a quoted text"
+# This is a first level list item
+# This is a first level list item
+## This is a second level list item
+### This is a third level list item
+<code>This is a code text</code>
+"text":http
+"text":www.foo.com
