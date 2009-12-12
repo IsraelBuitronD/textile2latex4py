@@ -44,7 +44,7 @@ class Textile2LaTeXParser(InitParser):
         'UNDERSCORE','ASTERISK','CARET','TILDE','NUMBERSIGN',
         'DBLQUOTE',
         'H1','H2','H3','H4','H5',
-        'BQ','FN',
+        'BQ','FN','LCODE','RCODE',
         'TRADEMARK','REGISTERED','COPYRIGHT',
         'newline',
         )
@@ -91,6 +91,14 @@ class Textile2LaTeXParser(InitParser):
 
     def t_FN(self, t):
         r'fn[0-9]+\. '
+        return t
+
+    def t_LCODE(self, t):
+        r'<code>'
+        return t
+
+    def t_RCODE(self, t):
+        r'</code>'
         return t
  
     def t_DBLQUOTE(self, t):
@@ -148,6 +156,7 @@ class Textile2LaTeXParser(InitParser):
                         | superscript_text
                         | subscript_text
                         | list_text
+                        | code_text
                         | empty
         '''
         p[0] = p[1]
@@ -199,6 +208,12 @@ class Textile2LaTeXParser(InitParser):
         blockquote : BQ text 
         '''
         p[0] = "\\begin{quote}\n" + p[2] + "\n\\end{quote}"
+
+    def p_code_text(self,p):
+        '''
+        code_text : LCODE text RCODE
+        '''
+        p[0] = "\\begin{verbatim}\n" + p[2] + "\n\\end{verbatim}"
 
     def p_footnote(self,p):
         '''
@@ -267,7 +282,6 @@ class Textile2LaTeXParser(InitParser):
     def p_trademark_text(self,p):
         'trademark_text : TRADEMARK'
         p[0] = '\\texttrademark '
-        print "prod <trademark> => " + p[0]
 
     def p_registered_text(self,p):
         'registered_text : text REGISTERED'
