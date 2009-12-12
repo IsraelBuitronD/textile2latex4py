@@ -1,7 +1,26 @@
 Description
 ===========
 
-Textile2LaTeX4py is a traslator for Textile scripts into LaTeX ones, with a pure Python implementation (using PLY).
+Textile2LaTeX4py is a traslator for Textile scripts into LaTeX ones,
+with a pure Python implementation (using PLY).
+
+ToDo List and Pendings
+======================
+
+Here is a list of pending features and some detected-reported errors.
+
+- Check and correct paragraphs support.
+- Support multiline code text.
+- Support hyperlinks.
+- Support tables.
+- Support images.
+- Check and support correctly 'trademark', 'registered' and
+  'copyright' textile symbols.
+
+
+If you detect some error or have SUGGESTIONS or COMMENTS, please BE
+FREE TO CONTACT ME to notify me or if you was to make contributions
+too.
 
 Contact Info
 ============
