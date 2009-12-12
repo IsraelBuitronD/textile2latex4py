@@ -40,27 +40,16 @@ class InitParser:
 class Textile2LaTeXParser(InitParser):
 
     tokens = (
-#        'ANYTEXT',
         'ALPHANUMTEXT','ALPHATEXT',
-#        'SPACE',
-        'UNDERSCORE','ASTERISK',
-#        'PLUS','MINUS',
-#        'QUOTE',
+        'UNDERSCORE','ASTERISK','CARET','TILDE','NUMBERSIGN',
         'DBLQUOTE',
         'H1','H2','H3','H4','H5',
-        'BQ',
+        'BQ','FN',
         'TRADEMARK','REGISTERED','COPYRIGHT',
+        'newline',
         )
 
     # Tokens
-
-#    t_TRADEMARK  = r'(TM)'
-#    t_REGISTERED = r'(R)'
-#    t_COPYRIGHT  = r'(C)'
-#    t_QUOTE      = r"\'"
-#    t_DBLQUOTE   = r'"'
-#    t_UNDERSCORE = r'_'
-#    t_SPACE      = u' '
 
     t_ignore = " \t"
        
@@ -97,7 +86,11 @@ class Textile2LaTeXParser(InitParser):
         return t
        
     def t_BQ(self, t):
-        r'bq '
+        r'bq\. '
+        return t
+
+    def t_FN(self, t):
+        r'fn[0-9]+\. '
         return t
  
     def t_DBLQUOTE(self, t):
@@ -108,21 +101,21 @@ class Textile2LaTeXParser(InitParser):
         r'_'
         return t
  
+    def t_NUMBERSIGN(self, t):
+        r'\#+ '
+        return t
+ 
     def t_ASTERISK(self, t):
         r'\*'
         return t
  
-#     def t_PLUS(self, t):
-#         r'\+'
-#         return t
+    def t_CARET(self, t):
+        r'\^'
+        return t
 
-#     def t_MINUS(self, t):
-#         r'-'
-#         return t
-
-#     def t_SPACE(self, t):
-#         r'[ ]'
-#         return t
+    def t_TILDE(self, t):
+        r'~'
+        return t
  
     def t_newline(self, t):
         r'\n+'
@@ -139,19 +132,8 @@ class Textile2LaTeXParser(InitParser):
     def t_ALPHATEXT(self, t):
         r'[a-zA-Z0-9 ]+'
         return t
-        
-#     def t_ANYTEXT(self, t):
-#         r'.+'
-#         return t
 
     # Parsing rules
-
-#     precedence = (
-#         ('left','PLUS','MINUS'),
-#         ('left','TIMES','DIVIDE'),
-#         ('left', 'EXP'),
-#         ('right','UMINUS'),
-#         )
 
     def p_textile_content(self,p):
         '''
@@ -162,6 +144,10 @@ class Textile2LaTeXParser(InitParser):
                         | registered_text
                         | copyright_text
                         | blockquote
+                        | footnote
+                        | superscript_text
+                        | subscript_text
+                        | list_text
                         | empty
         '''
         p[0] = p[1]
@@ -214,12 +200,32 @@ class Textile2LaTeXParser(InitParser):
         '''
         p[0] = "\\begin{quote}\n" + p[2] + "\n\\end{quote}"
 
+    def p_footnote(self,p):
+        '''
+        footnote : FN text 
+        '''
+        p[0] = '\\footnote{' + p[2] + '}'
+
     def p_textile_phrase_modified(self,p):
         '''
         textile_phrase_modified : stronged_text
                                 | underlined_text
         '''
         p[0] = p[1]
+
+    def p_superscript_text(self,p):
+        '''
+        superscript_text : CARET text CARET
+                         | CARET textile_phrase_modified CARET
+        '''
+        p[0] = "\\textsuperscript{" + p[2] + "}"
+
+    def p_subscript_text(self,p):
+        '''
+        subscript_text : TILDE text TILDE
+                       | TILDE textile_phrase_modified TILDE
+        '''
+        p[0] = "\\textsubscript{" + p[2] + "}"
 
     def p_stronged_text(self,p):
         '''
@@ -234,6 +240,23 @@ class Textile2LaTeXParser(InitParser):
                         | UNDERSCORE textile_phrase_modified UNDERSCORE
         '''
         p[0] = "\\emph{" + p[2] + "}"
+
+    def p_list_text(self,p):
+        '''
+        list_text : list_item_text list_text
+                  | list_item_text
+        '''
+        if len(p)==2:
+            p[0] = "\\begin{enumerate}\n" + p[1] + "\n\\end{enumerate}"
+        elif len(p)==3:
+            p[0] = "\\begin{enumerate}\n" + p[1] + "\n" + p[2] + "\n\\end{enumerate}"
+
+    def p_list_item_text(self,p):
+        '''
+        list_item_text : NUMBERSIGN text
+                       | NUMBERSIGN textile_phrase_modified
+        '''
+        p[0] = "\\item " + p[2]
 
     def p_dbl_quoted_text(self,p):
         '''
