@@ -4,6 +4,14 @@ Description
 Textile2LaTeX4py is a traslator for Textile scripts into LaTeX ones,
 with a pure Python implementation (using PLY).
 
+Get the project
+===============
+
+Textile2LaTeX4Py is mounted into a Git repository, you can get a clone
+with this url:
+
+     git://github.com/neoriddle/textile2latex4py.git
+
 ToDo List and Pendings
 ======================
 
@@ -29,4 +37,5 @@ Contact Info
 Name	Israel Buitron
 Email	israel.buitron@gmail.com
 	ibuitron@computacion.cs.cinvestav.mx
-Webpage	http://computacion.cs.cinvestav.mx/~ibuitron
+Webpage	http://github.com/neoriddle/textile2latex4py
+	http://computacion.cs.cinvestav.mx/~ibuitron
